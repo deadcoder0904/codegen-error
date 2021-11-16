@@ -8,8 +8,6 @@ const UserType = objectType({
   definition(t) {
     t.field(User.id)
     t.field(User.name)
-    t.field(User.username)
-    t.field(User.teams)
     t.field(User.email)
   },
 })
@@ -39,13 +37,14 @@ const mutations = extendType({
       type: 'User',
       args: {
         userId: nonNull(stringArg()),
-        username: nonNull(stringArg()),
+        name: nonNull(stringArg()),
+        email: nonNull(stringArg()),
       },
-      resolve: async (_, { userId, username }, ctx) => {
+      resolve: async (_, { userId, name, email }, ctx) => {
         if (!ctx.user?.id || userId !== ctx.user.id) return null
 
         return await prisma.user.create({
-          data: { username },
+          data: { name, email },
         })
       },
     })
@@ -54,13 +53,14 @@ const mutations = extendType({
       args: {
         userId: nonNull(stringArg()),
         name: stringArg(),
+        email: stringArg(),
       },
-      resolve: async (_, { userId, name }, ctx) => {
+      resolve: async (_, { userId, name, email }, ctx) => {
         if (!ctx.user?.id || userId !== ctx.user.id) return null
 
         return await prisma.user.update({
           where: { id: userId },
-          data: { name },
+          data: { name, email },
         })
       },
     })
